@@ -218,8 +218,20 @@ done
 
 # Install Custom Resource Definitions, Knative Serving, Knative Eventing
 if [ -z "${MODULE_TYPE##*m4*}" ] ; then
-  echo -e "Installing Knative Subscriptions..."
-  oc apply -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2-infra/ocp-4.1/files/catalog-sources.yaml
+
+echo -e "Installing Knative Subscriptions..."
+# oc apply -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2-infra/ocp-4.1/files/catalog-sources.yaml
+cat <<EOF | oc apply -n openshift-marketplace -f -
+apiVersion: operators.coreos.com/v1
+kind: CatalogSourceConfig
+metadata:
+  name: rhd-workshop-packages
+  namespace: openshift-marketplace
+spec:
+  targetNamespace: openshift-operators
+  packages: knative-serving-operator,knative-eventing-operator,openshift-pipelines-operator
+  source: community-operators
+EOF
   
   echo -e "Installing Knative Serving..."
   oc apply -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2-infra/ocp-4.1/files/knative-serving-subscription.yaml
@@ -232,7 +244,7 @@ kind: CatalogSourceConfig
 metadata:
   finalizers:
   - finalizer.catalogsourceconfigs.operators.coreos.com
-  name: installed-community-openshift-operators
+  name: rhd-workshop-packages
   namespace: openshift-marketplace
 spec:
   targetNamespace: openshift-operators
@@ -248,16 +260,31 @@ metadata:
   name: knative-eventing-operator
   namespace: openshift-operators
   labels:
-    csc-owner-name: installed-community-openshift-operators
+    csc-owner-name: rhd-workshop-packages
     csc-owner-namespace: openshift-marketplace
 spec:
   channel: alpha
   installPlanApproval: Manual
   name: knative-eventing-operator
-  source: installed-community-openshift-operators
+  source: rhd-workshop-packages
   sourceNamespace: openshift-operators
-  startingCSV: knative-eventing-operator.v0.10.0
+  startingCSV: knative-eventing-operator.v0.9.0
 EOF
+
+# Waiting for getting knative-eventing-operator subscription
+echo "Waiting for getting knative-eventing-operator subscription"
+while [ true ] ; do
+  if [ "$(oc -n openshift-operators get subscription knative-eventing-operator -o=jsonpath='{.status.installPlanRef.name}')" ] ; then
+    break
+  fi
+  echo -n .
+  sleep 10
+done
+
+export InstallPlanName=$(oc -n openshift-operators get subscription knative-eventing-operator -o=jsonpath='{.status.installPlanRef.name}')
+echo -e "InstallPlanName: $InstallPlanName"
+
+oc -n  openshift-operators patch installplan $InstallPlanName --type=json -p='[{ "op": "replace", "path": "/spec/approved", "value": true }]'
 
 echo -e "Creating Role, Group, and assign Users"
 for i in $(eval echo "{0..$USERCOUNT}") ; do
@@ -297,6 +324,9 @@ oc policy add-role-to-user workshop-student$i user$i --role-namespace=user$i-clo
 done
 
 # Install AMQ Streams operator for all namespaces
+oc apply -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2-infra/ocp-4.2/files/clusterserviceversion-amqstreams.v1.3.0.yaml
+oc apply -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2-infra/ocp-4.2/files/subscription-amq-streams.yaml
+
 cat <<EOF | oc apply -n openshift-marketplace -f -
 apiVersion: operators.coreos.com/v1
 kind: CatalogSourceConfig
