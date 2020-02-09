@@ -12,7 +12,7 @@
         "machines": {
           "dev-machine": {
             "env": {
-              "MAVEN_OPTS" : "-Xmx512m",
+              "MAVEN_OPTS": "-Xmx512m",
               "MAVEN_MIRROR_URL": "http://nexus:8081/repository/maven-all-public"
             },
             "servers": {
@@ -52,8 +52,7 @@
         }
       }
     },
-    "commands": [
-      {
+    "commands": [{
         "commandLine": "mvn package -f ${current.project.path}",
         "name": "build",
         "type": "mvn",
@@ -112,8 +111,8 @@
         "name": "run spring-boot",
         "type": "mvn",
         "attributes": {
-            "goal": "Run",
-            "previewUrl": "${server.9000/tcp}"
+          "goal": "Run",
+          "previewUrl": "${server.9000/tcp}"
         }
       }
     ],
@@ -122,8 +121,7 @@
     "name": "default",
     "links": []
   },
-  "components": [
-    {
+  "components": [{
       "version": "---",
       "name": "CentOS"
     },
