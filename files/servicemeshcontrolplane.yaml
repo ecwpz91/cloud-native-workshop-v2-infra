@@ -33,7 +33,7 @@ spec:
       outboundTrafficPolicy:
         mode: REGISTRY_ONLY # defaults to ALLOW_ANY
       # its either * or . - in case we can test all use cases, lets start with . in our dev env only
-      # this will set the following in the config map:
+      # this will set the following in the config map: 
       # defaultServiceExportTo:
       #   - "."
       # defaultVirtualServiceExportTo:
@@ -113,7 +113,7 @@ spec:
             memory: 128Mi
     kiali:
       enabled: true
-      tag: 0.16.2
+      tag: 0.20.0
     tracing:
       enabled: true
       hub: distributed-tracing-tech-preview
