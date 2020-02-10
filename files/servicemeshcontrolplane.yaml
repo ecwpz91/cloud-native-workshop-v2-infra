@@ -113,7 +113,7 @@ spec:
             memory: 128Mi
     kiali:
       enabled: true
-      tag: v0.16.2
+      tag: 0.16.2
     tracing:
       enabled: true
       hub: distributed-tracing-tech-preview
