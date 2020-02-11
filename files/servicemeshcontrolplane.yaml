@@ -1,5 +1,5 @@
 apiVersion: istio.openshift.com/v1alpha3
-kind: ControlPlane
+kind: ServiceMeshControlPlane
 metadata:
   name: istio-installation
 spec:
@@ -19,6 +19,7 @@ spec:
     #     CA_ADDR: "istio-citadel:8060"
     #     VALID_TOKEN: true
     global:
+      # force to use rhel7 based proxy-init container
       hub: openshift-istio-tech-preview
       tag: 0.10.0
       # the following lines enable tls across the control and data planes
