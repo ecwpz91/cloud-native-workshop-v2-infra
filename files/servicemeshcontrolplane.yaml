@@ -1,5 +1,5 @@
 apiVersion: istio.openshift.com/v1alpha3
-kind: ServiceMeshControlPlane
+kind: ControlPlane
 metadata:
   name: istio-installation
 spec:
@@ -72,8 +72,6 @@ spec:
         # sds:
         #   enabled: true
         #   image: docker.io/istio/node-agent-k8s:1.1.9
-        autoscaleMin: 1
-        autoscaleMax: 3
       istio-ingressgateway:
         autoscaleEnabled: false
         ior_enabled: false
@@ -87,8 +85,6 @@ spec:
         # sds:
         #   enabled: false
         #   image: docker.io/istio/node-agent-k8s:1.1.9
-        autoscaleMin: 1
-        autoscaleMax: 3
     mixer:
       policy:
         autoscaleEnabled: false
@@ -127,5 +123,5 @@ spec:
         passphrase: admin
     tracing:
       enabled: true
-      # hub: distributed-tracing-tech-preview
-      # tag: 1.11.0
+      hub: distributed-tracing-tech-preview
+      tag: 1.11
