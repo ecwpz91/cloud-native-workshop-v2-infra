@@ -73,7 +73,7 @@ spec:
         #   enabled: true
         #   image: docker.io/istio/node-agent-k8s:1.1.9
         autoscaleMin: 1
-        autoscaleMax: 5
+        autoscaleMax: 3
       istio-ingressgateway:
         autoscaleEnabled: false
         ior_enabled: false
@@ -88,7 +88,7 @@ spec:
         #   enabled: false
         #   image: docker.io/istio/node-agent-k8s:1.1.9
         autoscaleMin: 1
-        autoscaleMax: 5
+        autoscaleMax: 3
     mixer:
       policy:
         autoscaleEnabled: false
